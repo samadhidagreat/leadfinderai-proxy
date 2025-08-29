@@ -1,10 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>LeadFinderAI Proxy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Local Lead Finder</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 600px;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin: 40px auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      margin: 0;
+      color: #2c5282;
+      font-size: 2.2em;
+    }
+    .tagline {
+      color: #666;
+      font-size: 1.1em;
+      margin-top: 8px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #444;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3182ce;
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #2c5282;
+    }
+    button:disabled {
+      background-color: #90cdf4;
+      cursor: not-allowed;
+    }
+    .success, .error {
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    .success {
+      background-color: #c6f6d5;
+      color: #276749;
+    }
+    .error {
+      background-color: #fed7d7;
+      color: #9b2c2c;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h1>Proxy Server for LeadFinderAI</h1>
-  <p>This is a serverless function that forwards data to Make.com.</p>
+  <div class="container">
+    <header>
+      <h1>LeadScout</h1>
+      <p class="tagline">Find local business emails in seconds</p>
+    </header>
+
+    <form id="leadForm">
+      <div class="form-group">
+        <label for="business">What business type?</label>
+        <input type="text" id="business" placeholder="e.g., roofing, plumbing" required />
+      </div>
+      <div class="form-group">
+        <label for="location">Where?</label>
+        <input type="text" id="location" placeholder="e.g., Gary, IN" required />
+      </div>
+      <button type="submit" id="submitBtn">Find Leads</button>
+    </form>
+
+    <div id="successMessage" class="success hidden">
+      ✅ Got it! Searching for <span id="echoBusiness"></span> in <span id="echoLocation"></span>...<br>
+      Results will be processed shortly.
+    </div>
+
+    <div id="errorMessage" class="error hidden">
+      ❌ Oops! Something went wrong. Please try again.
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const echoBusiness = document.getElementById('echoBusiness');
+    const echoLocation = document.getElementById('echoLocation');
+
+    // ✅ Replace with your real Vercel function URL
+    const webhookUrl = 'https://leadfinderai.vercel.app/api/forward'; // ← Change this!
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const business = document.getElementById('business').value.trim();
+      const location = document.getElementById('location').value.trim();
+
+      echoBusiness.textContent = business;
+      echoLocation.textContent = location;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Searching...';
+
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ business, location })
+        });
+
+        if (response.ok) {
+          form.classList.add('hidden');
+          successMessage.classList.remove('hidden');
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        errorMessage.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Find Leads';
+      }
+    });
+  </script>
 </body>
 </html>
