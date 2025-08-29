@@ -1,9 +1,7 @@
 export default async function handler(req, res) {
-  // ✅ Enable CORS for your domain
+  // ✅ Enable CORS — NO TRAILING SPACES!
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'https://leadfinderai.superlativeorganics.shop');
-  // Or use '*' for any origin (less secure)
-  // res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://leadfinderai.superlativeorganics.shop'); // ← No space
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
@@ -20,8 +18,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🔁 Forward to your Make.com webhook
-    const makeWebhookUrl = 'https://hook.us2.make.com/ug6v819x33as3hwv4f17w5s9qgft8v8g';
+    // 🔁 Forward to your Make.com webhook — NO TRAILING SPACE!
+    const makeWebhookUrl = 'https://hook.us2.make.com/ug6v819x33as3hwv4f17w5s9qgft8v8g'; // ← Clean URL
 
     const response = await fetch(makeWebhookUrl, {
       method: 'POST',
@@ -48,9 +46,9 @@ export default async function handler(req, res) {
   }
 }
 
-// Export config to disable body parsing (optional)
+// Export config
 export const config = {
   api: {
-    bodyParser: false, // Optional: let JSON parse naturally
+    bodyParser: false,
   },
 };
