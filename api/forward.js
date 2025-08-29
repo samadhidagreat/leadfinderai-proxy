@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
   try {
     // 🔁 Forward to your Make.com webhook — NO TRAILING SPACE!
-    const makeWebhookUrl = 'https://hook.us2.make.com/ug6v819x33as3hwv4f17w5s9qgft8v8g'; // ← Clean URL
+    const makeWebhookUrl = 'https://hook.us2.make.com/jt9vgnubd15ev8cmxny1jyz8t7jj4y78'; // ← Clean URL
 
     const response = await fetch(makeWebhookUrl, {
       method: 'POST',
